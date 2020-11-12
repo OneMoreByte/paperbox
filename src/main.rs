@@ -1,23 +1,37 @@
 #[macro_use] extern crate diesel;
 
 use self::diesel::prelude::*;
+use std::collections::HashMap;
 use warp::Filter;
 
+mod db;
 mod server;
 mod models;
+mod schema;
+mod generators;
 
 #[tokio::main]
 async fn main() {
     let ip = [127, 0, 0, 1];
     let port = 3030;
 
+    let db_user = "postgres";
+    let db_pass = "password";
+    let db_url = "postgres://postgres:password@localhost";
+    let db_connection_string = format!("postgres://{}:{}@{}", db_user, db_pass, db_url);
+
     println!(
         "Staring server on {}.{}.{}.{}:{}", 
         ip[0], ip[1], ip[2], ip[3], port
     );
-    
-    let health = warp::path!("healthz").map(|| "Healthy!");
 
+    println!(
+        "Using potgress db on {} as {}",
+        db_url, db_user
+    );
+    
+
+    let health = warp::path!("healthz").map(|| "Healthy!");
 
     let wallpaper =  warp::path("wallpaper");
 
@@ -25,13 +39,13 @@ async fn main() {
     let wallpaper_put = warp::put()
         .and(wallpaper)
         .and(warp::body::json())
-        .map(|aaa: models::Wallpaper| "yeet");
+        .and_then(server::wallpaper::put);
         
     // GET    /wallpaper?name=String&tags=[String]&page=i32
     let wallpaper_get = warp::get()
         .and(wallpaper)
-        .and(warp::query::<server::WallpaperQuery>())
-        .map(|aaa: server::WallpaperQuery| "oof");
+        .and(warp::query::<HashMap<String, String>>())
+        .map(|aaa: HashMap<String, String> | "yoot"); //server::wallpaper::get(aaa));
 
     let wallpaper_id = wallpaper
         .and(warp::path::param::<i32>());
