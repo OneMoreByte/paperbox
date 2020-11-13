@@ -4,5 +4,6 @@ CREATE TABLE wallpapers (
 	preview text not NULL,
 	full_image text not NULL,
 	tags text[],
-	themes integer[]
+	themes integer[],
+	datahash VARCHAR
 )

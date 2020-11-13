@@ -2,7 +2,10 @@ table! {
     themes (id) {
         id -> Int4,
         name -> Varchar,
-        colors -> Nullable<Array<Int4>>,
+        foreground -> Varchar,
+        background -> Varchar,
+        cursor -> Varchar,
+        colors -> Nullable<Array<Varchar>>,
     }
 }
 
@@ -11,9 +14,10 @@ table! {
         id -> Int4,
         name -> Varchar,
         preview -> Text,
-        fullimage -> Text,
+        full_image -> Text,
         tags -> Nullable<Array<Text>>,
         themes -> Nullable<Array<Int4>>,
+        datahash -> Varchar,
     }
 }
 

@@ -1,13 +1,18 @@
 use serde_derive::{Deserialize, Serialize};
+use crate::schema::themes;
 
-#[derive(Queryable, Deserialize, Serialize)]
+#[derive(Queryable, Insertable, Deserialize, Serialize)]
+#[table_name="themes"]
 pub struct Theme {
     name: String,
-    colors: [i32;16],    
+    foreground: String,
+    background: String,
+    cursor: String,
+    colors: Vec<String>,    
 }
 
 impl Theme {
-    fn to_string(&self) -> String {
+    pub fn to_string(&self) -> String {
         return format!("name: {}", self.name);
     }
 }

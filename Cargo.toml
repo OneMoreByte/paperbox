@@ -8,10 +8,15 @@ edition = "2018"
 
 [dependencies]
 
+# TODO: Sort alphabeticly when dependencies are stablized.
 warp = "0.2.5"
 tokio = { version = "0.2", features = ["full"] }
 diesel = { version = "1.4.5", features = ["postgres"] }
 dotenv = "0.15.0"
 serde = "1.0.117"
 base64 = "0.13.0"
-serde_derive = "1.0.117"
+serde_json = "1.0.59"
+serde_derive = "1.0.108"
+image = "0.23.11"
+uuid = { version = "0.8", features = ["v4"] }
+sha2 = "0.9.2"

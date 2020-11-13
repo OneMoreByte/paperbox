@@ -2,5 +2,8 @@
 CREATE TABLE themes (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR not NULL,
-	colors integer[]
+	foreground VARCHAR,
+	background VARCHAR,
+	cursor VARCHAR,
+	colors VARCHAR[]
 )

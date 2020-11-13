@@ -4,11 +4,11 @@ use self::diesel::prelude::*;
 use std::collections::HashMap;
 use warp::Filter;
 
+
 mod db;
 mod server;
 mod models;
 mod schema;
-mod generators;
 
 #[tokio::main]
 async fn main() {
@@ -53,22 +53,22 @@ async fn main() {
     // GET    /wallpaper/id/
     let wallpaper_id_get = warp::get()
         .and(wallpaper_id)
-        .map(|aa| "heck");
+        .and_then(server::wallpaper::get_by_id);
 
     // POST   /wallpaper/id/
-    let wallpaper_id_post = warp::post()
+ /*   let wallpaper_id_post = warp::post()
         .and(wallpaper_id)
-        .map(|aa| "heck");
+        .map(|aa| "heck"); */
 
    // DELETE /wallpaper/id/
    let wallpaper_id_del = warp::delete()
         .and(wallpaper_id)
-        .map(|aaa| "heck");
+        .and_then(server::wallpaper::delete_by_id);
 
     let wallpaper_routes = wallpaper_put
-        .or(wallpaper_get)
+      //  .or(wallpaper_get)
         .or(wallpaper_id_get)
-        .or(wallpaper_id_post)
+//        .or(wallpaper_id_post)
         .or(wallpaper_id_del);
 
 
