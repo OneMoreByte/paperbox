@@ -20,3 +20,4 @@ serde_derive = "1.0.108"
 image = "0.23.11"
 uuid = { version = "0.8", features = ["v4"] }
 sha2 = "0.9.2"
+tera = "1.5.0"

@@ -14,13 +14,13 @@ pub struct Wallpaper {
     name: String,
     preview: String,
     full_image: String,
-    tags: Option<Vec<String>>,
+    tags: Vec<String>,
     themes: Option<Vec<i32>>,
     datahash: String
 }
 
 impl Wallpaper {
-
+    pub fn name(&self) -> String { self.name.clone() }
 
     pub fn to_string(&self) -> String {
         return format!("name: {}\npreview: {},\nimage: {}", self.name, self.preview, self.full_image);

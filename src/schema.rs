@@ -5,7 +5,7 @@ table! {
         foreground -> Varchar,
         background -> Varchar,
         cursor -> Varchar,
-        colors -> Nullable<Array<Varchar>>,
+        colors -> Array<Varchar>,
     }
 }
 
@@ -15,7 +15,7 @@ table! {
         name -> Varchar,
         preview -> Text,
         full_image -> Text,
-        tags -> Nullable<Array<Text>>,
+        tags -> Array<Text>,
         themes -> Nullable<Array<Int4>>,
         datahash -> Varchar,
     }
