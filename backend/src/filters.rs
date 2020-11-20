@@ -26,7 +26,7 @@ pub fn wallpaper()  -> impl Filter<Extract = impl warp::Reply, Error = warp::Rej
     let wallpaper_get = warp::get()
         .and(wallpaper)
         .and(warp::path::end())
-        .and(warp::query::<Option<handlers::wallpaper::WallpaperGet>>())
+        .and(warp::query::<HashMap<String,String>>())
         .and_then(handlers::wallpaper::get);
 
     let wallpaper_id = wallpaper

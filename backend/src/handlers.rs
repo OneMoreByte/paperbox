@@ -35,7 +35,7 @@ pub mod wallpaper {
         page: Option<i32>
     }
 
-    pub async fn get(query_params: Option<WallpaperGet>) -> Result<impl warp::Reply, Infallible> {
+    pub async fn get(query_params: HashMap<String,String>) -> Result<impl warp::Reply, Infallible> {
         use crate::schema::wallpapers::dsl::*;
         let connection = db::establish_connection();
         let mut response: Vec<Wallpaper> = Vec::new();
@@ -45,8 +45,26 @@ pub mod wallpaper {
 
         let max_pages: i64 = db::get_wallpaper_max() / query_size;
         
-        if query_params.is_some() {
-            let params = query_params.unwrap();
+        //if query_params.is_some() {
+            let temp = query_params;
+            let params = WallpaperGet {
+                name: match temp.get("name") {
+                    Some(val) => Some(val.clone()),
+                    None => None
+                },
+                tags: match temp.get("tags") {
+                   Some(val) => Some(val.clone()
+                        .split(',')
+                        .map(|s| s.to_string())
+                        .collect()
+                    ),
+                    None => None
+                },
+                page: match temp.get("page") {
+                    Some(val) => Some(val.clone().parse::<i32>().expect("Failed to parse page number")),
+                    None => None
+                }
+            };
 
             if params.name.is_some() {
                 query = query.filter(name.eq(params.name.unwrap()));
@@ -60,18 +78,18 @@ pub mod wallpaper {
                 let page: i64 = params.page.unwrap().into();
                 query = query.offset(page * query_size);
             }
-        }
+       // }
 
         let result: Vec<Wallpaper> = query.order(name.desc())
                                         .limit(query_size.into())
                                         .load(&connection)
                                         .unwrap();
 
-        Ok(serde_json::to_string(&response).unwrap())
+        Ok(serde_json::to_string(&result).unwrap())
     }
 
     pub async fn put(request: WallpaperPut) -> Result<impl warp::Reply, Infallible> {
-        println!("Handling PUT request for wallpaper named {}", request.name);
+        println!("Handling PUT request for wallpaper named {}", &request.name);
 
         use crate::db;
         use diesel::prelude::*;
@@ -85,31 +103,32 @@ pub mod wallpaper {
             Err(e) => "./".to_string(),
         };
         // TODO: Error handling?
-        let image_bytes = base64::decode(request.data).unwrap();
+        let image_bytes = base64::decode(request.data).expect("failed to decode base64");
         let mut hasher = Sha256::new();
         hasher.update(&image_bytes);
         let hash = base64::encode(hasher.finalize());
-        let image = image::load_from_memory(&image_bytes).unwrap();
+        let image = image::load_from_memory(&image_bytes).expect("failed to load image");
         let preview_image = image.thumbnail_exact(640, 360);
         let store_uuid = Uuid::new_v4().to_simple().to_string();
 
         let full_image_path = format!("{}/full_image.png", store_uuid);
         let preview_path = format!("{}/preview.png", store_uuid);
 
-        fs::create_dir(format!("{}/{}", base_directory, store_uuid));
-        image.save(format!("{}/{}", base_directory, full_image_path));
-        preview_image.save(format!("{}/{}", base_directory, preview_path));
-
-        let output = Command::new("gen_themes")
+        fs::create_dir(format!("{}/{}", &base_directory, &store_uuid));
+        image.save(format!("{}/{}", &base_directory, &full_image_path));
+        preview_image.save(format!("{}/{}", &base_directory, &preview_path));
+        println!("Running 'gen_themes `{}` `{}`'", &request.name, format!("{}/{}", &base_directory, &full_image_path));
+        let output = Command::new("/usr/local/bin/gen_themes")
             .arg(&request.name)
-            .arg(&full_image_path)
+            .arg(format!("{}/{}", &base_directory, &full_image_path))
             .output()
             .expect("failed to generate theme");
-        let stdout = std::str::from_utf8(&output.stdout).unwrap().to_string();
-    
-        let theme_array: Vec<Theme> = serde_json::from_str(&stdout).unwrap();
-        let mut wallpaper_tags: request.tags.copy();
-        wallpaper_tags.append(request.name.clone());
+        let stdout = std::str::from_utf8(&output.stdout).expect("Failed to parse").to_string();
+        println!("{}", &stdout);
+        let theme_array: Vec<Theme> = serde_json::from_str(&stdout).expect("failed to read theme array");
+        let mut wallpaper_name = request.name.clone();
+        let mut wallpaper_tags = request.tags.clone();
+        wallpaper_tags.push(wallpaper_name);
         
         let mut theme_ids: Vec<i32> = Vec::new();
         
@@ -128,7 +147,7 @@ pub mod wallpaper {
             .get_result(&connection)
             .expect("Error saving new wallpaper");
         
-        Ok(serde_json::to_string(&db_result).unwrap())
+        Ok(serde_json::to_string(&db_result).expect("failed to unpack list"))
     }
 
     pub async fn get_by_id(id: i32) -> Result<impl warp::Reply, Infallible> {

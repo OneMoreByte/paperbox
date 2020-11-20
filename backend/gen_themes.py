@@ -12,6 +12,7 @@ with tempfile.TemporaryDirectory() as dir:
     for b in pywal.colors.list_backends():
         output = pywal.colors.get(sys.argv[2], backend=b, cache_dir=dir)
         temp = {
+            'id': 0,
             'name': f"{name}-{b}",
             'background': output['special']['background'],
             'foreground': output['special']['foreground'],

@@ -10,7 +10,7 @@ mod schema;
 
 #[tokio::main]
 async fn main() {
-    let ip = [127, 0, 0, 1];
+    let ip = [0, 0, 0, 0];
     let port = 3030;
 
     let db_user = "postgres";

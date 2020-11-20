@@ -35,13 +35,19 @@ pub fn insert_themes(theme_array: Vec<Theme>) -> Result<Vec<i32>, String> {
 }
 
 pub fn insert_theme(theme: Theme) -> Result<i32, String> {
-    use crate::schema::themes;
+    use crate::schema::themes::dsl::*;
     
     let connection = establish_connection();
 
-    let temp = diesel::insert_into(themes::table)
-    .values(&theme)
-    .returning(themes::id)
+    let temp = diesel::insert_into(themes)
+    .values((
+        name.eq(&theme.name),
+        foreground.eq(&theme.foreground),
+        background.eq(&theme.background),
+        cursor.eq(&theme.cursor),
+        colors.eq(&theme.colors)    
+    ))
+    .returning(id)
     .get_result::<i32>(&connection);
 
     match temp {
