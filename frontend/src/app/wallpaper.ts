@@ -5,7 +5,7 @@ export class Wallpaper {
     full_image: String;
     tags: String[];
     themes: number[];
-    datahash: String
+    datahash: String;
 
     constructor() {
         this.id = 0;
