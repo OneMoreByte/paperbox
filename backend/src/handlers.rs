@@ -130,9 +130,8 @@ pub mod wallpaper {
         let mut wallpaper_tags = request.tags.clone();
         wallpaper_tags.push(wallpaper_name);
         
-        let mut theme_ids: Vec<i32> = Vec::new();
-        
-        db::insert_themes(theme_array);
+        let theme_ids: Vec<i32> = db::insert_themes(theme_array)
+            .expect("Failed to insert themes");
 
         use crate::schema::wallpapers::dsl::*;
         let db_result: Wallpaper = diesel::insert_into(wallpapers)
@@ -191,9 +190,24 @@ pub mod theme {
         colors: Vec<String>,  
     }
 
+    
+    #[derive(Deserialize, Serialize)]
+    pub struct ThemesRequest {
+        ids: Vec<i32>
+    }
+
     pub async fn get(id: i32) -> Result<impl warp::Reply, Infallible> {
         let result = db::get_theme(id).expect("failed to get theme");
         Ok(serde_json::to_string(&result).unwrap())
+    }
+
+    pub async fn get_multiple(req: ThemesRequest) -> Result<impl warp::Reply, Infallible> {
+        let mut themes: Vec<Theme> = Vec::new();
+        for id in req.ids {
+           themes.push(db::get_theme(id).expect("failed to get theme"));
+        }
+
+        Ok(serde_json::to_string(&themes).unwrap())
     }
 
     pub async fn post(id: i32, data: Theme) -> Result<impl warp::Reply, Infallible> {

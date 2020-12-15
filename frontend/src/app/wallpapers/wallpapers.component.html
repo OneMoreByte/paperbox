@@ -1,20 +1,4 @@
-<div class="container">
-  
-    <div class="container" *ngFor="let wallpaper of this.wallpapers">
-        <div class="row">
-          <span>{{wallpaper['name']}}</span>
-          <span>Use <pre>ppr-cli apply {{wallpaper['id']}}</pre> to apply</span>
-        </div>
-        <div class="row">
-          <div class="col">
-            <img src="http://localhost:3030{{wallpaper['preview']}}">
-          </div>
-          <div class="col" *ngFor="let theme of wallpaper['themes']">
-            <div class="row">
-              {{this.themes[theme].name}}
-            </div> 
-          </div>
-        </div>
-    </div>
-  </div>
-  
+<p>wallpapers works!</p>
+<div *ngFor="let w of this.wallpapers">
+    <app-wallpaper [data]='w'></app-wallpaper>
+</div>

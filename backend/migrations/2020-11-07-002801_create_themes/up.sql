@@ -5,5 +5,5 @@ CREATE TABLE themes (
 	foreground VARCHAR,
 	background VARCHAR,
 	cursor VARCHAR,
-	colors VARCHAR[]
+	colors TEXT[]
 )

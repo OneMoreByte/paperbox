@@ -1,0 +1,14 @@
+<div class="">
+    <app-wallpaper-title [name]='data.name' ></app-wallpaper-title>
+    <div class="row">
+        <div class="col">
+            <app-wallpaper-preview [preview]='data.preview' ></app-wallpaper-preview>
+        </div>
+        <div class="col">
+            <app-editor-preview [themeService]='themeService'></app-editor-preview>
+        </div>
+        <div class="col">
+            <app-theme-selector [themeIds]='data.themes' [themeService]='themeService'></app-theme-selector>
+        </div>
+    </div>
+</div>

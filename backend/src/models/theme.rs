@@ -11,6 +11,7 @@ pub struct Theme {
     pub cursor: String,
     pub colors: Vec<String>,    
 }
+// test 
 
 impl Theme {
     pub fn to_string(&self) -> String {

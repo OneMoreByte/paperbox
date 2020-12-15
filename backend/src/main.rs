@@ -28,10 +28,19 @@ async fn main() {
         db_url, db_user
     );
     
+    let cors = warp::cors()
+    // TODO replace this with specific origins
+        .allow_any_origin()
+        .allow_headers(vec!["User-Agent", "Sec-Fetch-Mode", "Referer", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", "content-type"])
+        .allow_methods(vec!["GET", "POST", "PUT", "DELETE"]);
+
+
     let router = filters::health()
         .or(filters::wallpaper())
         .or(filters::theme())
-        .or(filters::image());
+        .or(filters::themes())
+        .or(filters::image())
+        .with(cors);
 
 
     warp::serve(router)

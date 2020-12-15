@@ -5,7 +5,7 @@ table! {
         foreground -> Varchar,
         background -> Varchar,
         cursor -> Varchar,
-        colors -> Array<Varchar>,
+        colors -> Array<Text>,
     }
 }
 

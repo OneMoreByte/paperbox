@@ -92,6 +92,21 @@ pub fn theme()  -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejecti
 
 }
 
+
+// Filters for /theme/id/
+pub fn themes()  -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    let theme = warp::path("themes")
+        .and(warp::path::end());
+
+    // POST    /themes
+    let theme_get = warp::post()
+    .and(warp::body::json())
+    .and_then(handlers::theme::get_multiple);
+
+    theme_get
+
+}
+
 pub fn image() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     dotenv().ok();
 
