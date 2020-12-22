@@ -1,5 +1,5 @@
 <div>
     <div class="wallpaper" *ngFor="let w of this.wallpapers">
-        <app-wallpaper [data]='w'></app-wallpaper>
+        <app-wallpaper [data]='w' [paperboxService]='paperboxService'></app-wallpaper>
     </div>
 </div>

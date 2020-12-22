@@ -1,3 +1,3 @@
-<div *ngFor="let t of themes" (click)="onClick(t)" [style.height]='"calc(100% / " + themes.length + ")"'>
-    <app-theme [theme]='t'></app-theme>
+<div *ngFor="let t of themes" (click)="onClick(t)" [style.height]='"calc(100% / " + themes.length + ")"' [ngClass]='t === themes[themes.length - 1] ? "last" : ""'>
+    <app-theme [theme]='t' [style.border-radius]='"inherit"'></app-theme>
 </div>
