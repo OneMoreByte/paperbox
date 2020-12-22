@@ -1,21 +1,21 @@
-<div class="card">
-    <div class="row">
-        <div class="col">
-            <app-wallpaper-title [name]='data.name'></app-wallpaper-title>
+<div [style.background]='selectedTheme.background'>
+    <div class="row justify-content-between wallpaper-top">
+        <div class="col-3">
+            <app-wallpaper-title [name]='data.name' [style.color]='selectedTheme.foreground'></app-wallpaper-title>
         </div>
-        <div class="col-1 align-self-end">
-            <wallpaper-apply [themeService]='themeService' [wallpaperUrl]='wallpaperUrl'></wallpaper-apply>
+        <div class="col-1">
+            <wallpaper-apply [themeService]='themeService' [wallpaper]='data' [paperboxService]='paperboxService'></wallpaper-apply>
         </div>
 
     </div>
     <div class="row">
-        <div class="col">
+        <div class="col-5 no-padding-right">
             <app-wallpaper-preview [previewUrl]='previewUrl'></app-wallpaper-preview>
         </div>
-        <div class="col">
+        <div class="col-4 no-padding-right no-padding-left">
             <app-editor-preview [themeService]='themeService'></app-editor-preview>
         </div>
-        <div class="col">
+        <div class="col-3 no-padding-left">
             <app-theme-selector [themeIds]='data.themes' [themeService]='themeService'></app-theme-selector>
         </div>
     </div>

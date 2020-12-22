@@ -12,7 +12,7 @@ export class ThemeSelectorComponent implements OnInit {
   @Input() themeService: ThemesService;
 
   themes: ThemeModel[] = [];
-  selectedTheme: ThemeModel;
+  selectedTheme: ThemeModel = new ThemeModel();
 
   constructor() { }
 

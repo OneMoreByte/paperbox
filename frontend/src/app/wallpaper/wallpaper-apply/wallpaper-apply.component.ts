@@ -1,6 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { EventEmitter } from 'keyv';
 import { ThemeModel } from '../../models/theme.model';
+import { PaperboxService, SelectedPair } from '../../paperbox.service';
 import { ThemesService } from '../../themes.service';
+import { WallpaperModel } from '../wallpaper.model';
 
 
 @Component({
@@ -10,10 +13,11 @@ import { ThemesService } from '../../themes.service';
 })
 export class WallpaperApplyComponent implements OnInit {
   @Input() themeService: ThemesService;
-  @Input() wallpaperUrl: string;
+  @Input() paperboxService: PaperboxService;
+  @Input() wallpaper: WallpaperModel;
 
   applyText: string;
-  selectedTheme: ThemeModel;
+  selectedTheme: ThemeModel = new ThemeModel();
 
   constructor() { 
     this.applyText = "Apply"
@@ -24,10 +28,18 @@ export class WallpaperApplyComponent implements OnInit {
       if (res)
         this.selectedTheme = res;
     });
+
+    this.paperboxService.selectedPairSubject.subscribe(res => {
+      let theme: SelectedPair = res; 
+        if (res.theme === this.selectedTheme)
+          this.applyText = "Applied";
+        else
+          this.applyText = "Apply";
+    })
   }
 
   apply() {
-    console.log("Clicked!")
+    this.paperboxService.setActivePair(this.wallpaper, this.selectedTheme);
   }
 
 }

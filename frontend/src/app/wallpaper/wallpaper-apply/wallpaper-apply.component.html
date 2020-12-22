@@ -1,2 +1,3 @@
-<img src="{{url}}">
-<button class="btn" (click)='apply()' [style.background]='selectedTheme.background' [style.color]='selectedTheme.foreground'>{{ applyText }}</button>
+<div class=button-container>
+    <button class="btn" (click)='apply()' [style.background]='selectedTheme.colors[2]' [style.color]='selectedTheme.background'>{{ applyText }}</button>
+</div>

@@ -1,5 +1,20 @@
-
+<div class="preview" [style.background]="selectedTheme.background" [style.color]="selectedTheme.foreground">
 <pre>
-<code [highlight]='code'>
+<code [style.color]="selectedTheme.foreground">
+<span [style.color]='selectedTheme.colors[2]'>use</span> warp::Filter;
+
+<span class="comment" [style.color]='selectedTheme.colors[8]'>// <span [style.color]='selectedTheme.colors[9]'>TODO:</span> Write some documentation</span>
+[#tokio::main]
+<span [style.color]='selectedTheme.colors[2]'>async</span> <span [style.color]='selectedTheme.colors[1]'><span [style.color]='selectedTheme.colors[2]'>fn</span> <span class="{{ title }}">main</span></span>() {{ '{' }}
+    <span [style.color]='selectedTheme.colors[2]'>let</span> hw: <span [style.color]='selectedTheme.colors[5]'>String</span> = <span [style.color]='selectedTheme.colors[4]'>&quot;Hello world&quot;</span>;
+    <span [style.color]='selectedTheme.colors[5]'>println!</span>(hw);
+    <span [style.color]='selectedTheme.colors[2]'>let</span> hello = warp::path!(<span [style.color]='selectedTheme.colors[4]'>&quot;hello&quot;</span> / <span [style.color]='selectedTheme.colors[5]'>String</span>)
+        .map(|name| <span [style.color]='selectedTheme.colors[5]'>format!</span>(<span [style.color]='selectedTheme.colors[4]'>&quot;{{ '{}' }}: {{ '{}' }}&quot;</span>, hw, name)); 
+
+    warp::serve(hello)
+        .run(([<span [style.color]='selectedTheme.colors[3]'>127</span>, <span [style.color]='selectedTheme.colors[3]'>0</span>, <span [style.color]='selectedTheme.colors[3]'>0</span>, <span [style.color]='selectedTheme.colors[3]'>1</span>], <span [style.color]='selectedTheme.colors[3]'>3030</span>))
+        .<span [style.color]='selectedTheme.colors[2]'>await</span>;
+{{ '}' }}
 </code>
 </pre>
+</div>

@@ -9,10 +9,12 @@ import { AppConfig } from '../environments/environment';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  electronService: ElectronService;
   constructor(
-    private electronService: ElectronService,
+    electronService: ElectronService,
     private translate: TranslateService
   ) {
+    this.electronService = electronService;
     this.translate.setDefaultLang('en');
     console.log('AppConfig', AppConfig);
 
