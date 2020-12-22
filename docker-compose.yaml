@@ -7,7 +7,6 @@ services:
 
     volumes: 
       - webserver:/store
-      - D:\Code\paperbox\frontend:/workspace
     links:
       - postgres
     environment: 
