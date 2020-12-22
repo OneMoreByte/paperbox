@@ -15,14 +15,20 @@ import { HttpClient } from '@angular/common/http';
 export class WallpaperComponent implements OnInit {
   @Input() data : WallpaperModel;
   
+  baseUrl = "http://localhost:3030"
   themeService: ThemesService;
-  
+  wallpaperUrl: string;
+  previewUrl: string;
+
+
   constructor(private http: HttpClient) { 
     this.themeService = new ThemesService(http);
+ 
   }
 
   ngOnInit(): void {
-
+    this.wallpaperUrl = this.baseUrl + this.data.full_image;
+    this.previewUrl = this.baseUrl + this.data.preview;
   }
 
 }

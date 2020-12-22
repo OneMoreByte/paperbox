@@ -1,8 +1,16 @@
-<div class="">
-    <app-wallpaper-title [name]='data.name' ></app-wallpaper-title>
+<div class="card">
     <div class="row">
         <div class="col">
-            <app-wallpaper-preview [preview]='data.preview' ></app-wallpaper-preview>
+            <app-wallpaper-title [name]='data.name'></app-wallpaper-title>
+        </div>
+        <div class="col-1 align-self-end">
+            <wallpaper-apply [themeService]='themeService' [wallpaperUrl]='wallpaperUrl'></wallpaper-apply>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col">
+            <app-wallpaper-preview [previewUrl]='previewUrl'></app-wallpaper-preview>
         </div>
         <div class="col">
             <app-editor-preview [themeService]='themeService'></app-editor-preview>

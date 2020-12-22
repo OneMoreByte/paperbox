@@ -6,6 +6,7 @@ import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
+import { HighlightModule, HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 
 // NG Translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -16,9 +17,9 @@ import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
 import { WallpapersComponent } from './wallpapers/wallpapers.component';
-import { WallpaperModel } from './wallpaper/wallpaper.model';
 import { WallpaperTitleComponent } from './wallpaper/wallpaper-title/wallpaper-title.component';
 import { WallpaperPreviewComponent } from './wallpaper/wallpaper-preview/wallpaper-preview.component';
+import { WallpaperApplyComponent } from './wallpaper/wallpaper-apply/wallpaper-apply.component';
 import { EditorPreviewComponent } from './wallpaper/editor-preview/editor-preview.component';
 import { ThemeSelectorComponent } from './wallpaper/theme-selector/theme-selector.component';
 import { ThemeComponent } from './wallpaper/theme-selector/theme/theme.component';
@@ -36,6 +37,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     WallpapersComponent, 
     WallpaperComponent,
     WallpaperTitleComponent, 
+    WallpaperApplyComponent,
     WallpaperPreviewComponent, 
     EditorPreviewComponent, 
     ThemeSelectorComponent, 
@@ -50,6 +52,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     HomeModule,
     DetailModule,
     AppRoutingModule,
+    HighlightModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -58,7 +61,14 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       }
     })
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: {
+        fullLibraryLoader: () => import('highlight.js'),
+      }
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

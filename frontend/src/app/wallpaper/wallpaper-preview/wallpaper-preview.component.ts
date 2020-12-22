@@ -7,12 +7,11 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./wallpaper-preview.component.scss']
 })
 export class WallpaperPreviewComponent implements OnInit {
-  @Input() preview: String;
-  url = "";
+  @Input() previewUrl: String;
+
   constructor() { }
 
   ngOnInit(): void {
-    this.url = "http://localhost:3030" + this.preview;
   }
 
 }
