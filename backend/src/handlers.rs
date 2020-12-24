@@ -245,7 +245,7 @@ pub mod template {
 
 
 
-    pub async fn get(data: TemplateRequest) -> Result<impl warp::Reply, Infallible> {
+    pub async fn post(data: TemplateRequest) -> Result<impl warp::Reply, Infallible> {
         let mut files: HashMap<String, String> = HashMap::new();
         let mut response = TemplateResponse { files: files };
         let theme: Theme = db::get_theme(data.theme_id).expect("Bad theme id");

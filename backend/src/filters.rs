@@ -122,8 +122,8 @@ pub fn image() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejectio
 }
 
 pub fn template()  -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::get()
+    warp::post()
     .and(warp::path("template"))
     .and(warp::body::json())
-    .and_then(handlers::template::get)
+    .and_then(handlers::template::post)
 }
