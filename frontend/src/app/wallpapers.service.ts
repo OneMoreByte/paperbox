@@ -14,7 +14,7 @@ export class WallpapersService {
   constructor(private http: HttpClient) { 
   }
 
-  getWallpapers(page=0, tags=[]): Observable<WallpaperModel[]> {
-    return this.http.get<WallpaperModel[]>("http://localhost:3030/wallpaper");
+  getWallpapers(url, page=0, tags=[]): Observable<WallpaperModel[]> {
+    return this.http.get<WallpaperModel[]>(url + "/wallpaper");
   }
 }

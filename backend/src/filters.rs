@@ -127,3 +127,15 @@ pub fn template()  -> impl Filter<Extract = impl warp::Reply, Error = warp::Reje
     .and(warp::body::json())
     .and_then(handlers::template::post)
 }
+
+pub fn frontend() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    dotenv().ok();
+
+    let app_dir = match env::var("FRONTEND_PATH") {
+        Ok(val) => val,
+        Err(e) => "./".to_string(),
+    };
+
+    warp::get()
+        .and(warp::fs::dir(app_dir))
+}

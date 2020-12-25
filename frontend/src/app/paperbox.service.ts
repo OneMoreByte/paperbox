@@ -8,7 +8,6 @@ import { Subject } from 'rxjs';
 import { ipcRenderer, webFrame, remote } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
-import * as http from 'http';
 import * as axios from 'axios';
 import { stringify } from '@angular/compiler/src/util';
 import { collectExternalReferences } from '@angular/compiler';
@@ -22,7 +21,6 @@ export class PaperboxService {
   remote: typeof remote;
   childProcess: typeof childProcess;
   fs: typeof fs;
-  http: typeof http;
   axios: typeof axios;
 
   config: Config;
@@ -40,7 +38,7 @@ export class PaperboxService {
     return !!(window && window.process && window.process.type);
   }
 
-  setActivePair(wallpaper: WallpaperModel, theme: ThemeModel) {
+  async setActivePair(wallpaper: WallpaperModel, theme: ThemeModel) {
     if (this.isElectron) {
       this.config.selectedTheme = theme;
       this.config.selectedWallpaper = wallpaper;
@@ -48,8 +46,8 @@ export class PaperboxService {
       this.selectedPairSubject.next(new SelectedPair(wallpaper, theme));
       this.runPreApplyScripts();
       console.log(`Applying wallpaper ${wallpaper.id} and theme ${theme.id}`);
-      this.getWallpaper();
-      this.templateFiles();
+      await this.getWallpaper();
+      await this.templateFiles();
       this.runPostApplyScripts();
     } else {
       throw "Tried to set active pair in non-electron environment"
@@ -64,12 +62,13 @@ export class PaperboxService {
 
   }
 
-  private getWallpaper() {
-    let wallpaperFile = this.fs.createWriteStream(this.wallpaperPath);
+  private async getWallpaper() {
     let wallpaperUrl = this.config.serverUrl + this.config.selectedWallpaper.full_image;
-    let options = {agent: false};
-    this.http.get(wallpaperUrl, options, (res) => {
-      res.pipe(wallpaperFile);
+    await this.axios.default.get(wallpaperUrl, {
+      responseType: 'arraybuffer'
+    }).then((res) => {
+      let buf = Buffer.from(res.data, 'binary');
+      this.fs.writeFileSync(this.wallpaperPath, buf);
     });
   }
 
@@ -81,7 +80,7 @@ export class PaperboxService {
     });
   }
 
-  private templateFiles() {
+  private async templateFiles() {
     let templates = this.fs.readdirSync(this.templateDir, { withFileTypes: true });
     let files = new Map<string, string>();
     templates.forEach((template) => {
@@ -89,31 +88,23 @@ export class PaperboxService {
         files[template.name] = this.fs.readFileSync(this.templateDir + "/" + template.name).toString();
       }
     })
-    let postData = JSON.stringify({theme_id: this.config.selectedTheme.id, files: files })
-    console.log(postData);
-    let options = {
-      agent: false,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': postData.length
-      }
-    }
+    let postData = {theme_id: this.config.selectedTheme.id, files: files };
     let url = this.config.serverUrl + "/template";
-    console.log(url);
-    let req = this.http.request(url, options, (res) => {
-      res.setEncoding('utf8');
-      res.on('data', (chunk) => {
-      let data = JSON.parse(chunk);
-		  console.log(chunk);
-          Object.keys(data['files']).forEach(key => {
-            console.log("Writing out " + key);
-            this.fs.writeFileSync(this.processedTemplateDir + "/" + key, data['files'][key]);
-          });
-      });
+    await this.axios.default.post(url, postData).then((response) => {
+      let data = response.data;
+      Object.keys(data['files']).forEach(key => {
+        console.log("Writing out " + key);
+        this.fs.writeFileSync(this.processedTemplateDir + "/" + key, data['files'][key]);
+      })
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    })
+    .then(function () {
+      // always executed
     });
-    req.write(postData);
-    req.end();
+;
   }
 
   private runPreApplyScripts() {
@@ -139,6 +130,15 @@ export class PaperboxService {
       console.log(`ERR: The entry ${script.name} is not a file`)
   }
 
+  private serverConfig(): Config {
+    // Server can use relative dirs.
+    return {
+      selectedTheme: null,
+      selectedWallpaper: null,
+      serverUrl: ""
+    }
+  }
+
   constructor() {
     this.selectedPairSubject = new Subject();
     if (this.isElectron) {
@@ -150,7 +150,6 @@ export class PaperboxService {
 
       this.childProcess = window.require('child_process');
       this.fs = window.require('fs');
-      this.http = window.require('http');
       this.axios = window.require('axios');
 
       this.baseDir = window.process.env.HOME + "/.paperbox/";
@@ -160,10 +159,12 @@ export class PaperboxService {
       this.postApplyScripts = this.baseDir + "post.rc"
       this.wallpaperPath = this.baseDir + "wallpaper.png"
       this.configPath = this.baseDir + "config.json"
-
       this.createDataDirs();
       this.config = this.readConfig();
+    } else {
+      this.config = this.serverConfig();
     }
+ 
   }
 
   close() {
@@ -180,7 +181,7 @@ export class SelectedPair {
   }
 }
 
-class Config {
+export class Config {
   selectedTheme: ThemeModel;
   selectedWallpaper: WallpaperModel;
   serverUrl: string = "http://localhost:3030";

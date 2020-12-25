@@ -14,7 +14,7 @@ export class ThemesService {
     this.selectedThemeSubject = new Subject();
   }
 
-  getThemes(idArray): Observable<ThemeModel[]> {
+  getThemes(url, idArray): Observable<ThemeModel[]> {
     let request = {
       ids: idArray
     };
@@ -22,7 +22,7 @@ export class ThemesService {
        'Content-Type':  'application/json'
     }
       
-    return this.http.post<ThemeModel[]>("http://localhost:3030/themes", request, {headers});
+    return this.http.post<ThemeModel[]>(url + "/themes", request, {headers});
   }
 
   observeSelectedTheme(): Observable<ThemeModel> {

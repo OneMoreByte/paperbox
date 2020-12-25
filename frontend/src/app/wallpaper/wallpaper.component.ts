@@ -18,7 +18,7 @@ export class WallpaperComponent implements OnInit {
   @Input() data : WallpaperModel;
   @Input() paperboxService: PaperboxService;
   
-  baseUrl = "http://localhost:3030"
+  baseUrl: string;
   themeService: ThemesService;
   wallpaperUrl: string;
   previewUrl: string;
@@ -31,6 +31,7 @@ export class WallpaperComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.baseUrl = this.paperboxService.config.serverUrl;
     this.wallpaperUrl = this.baseUrl + this.data.full_image;
     this.previewUrl = this.baseUrl + this.data.preview;
     this.themeService.selectedThemeSubject.subscribe(res => {

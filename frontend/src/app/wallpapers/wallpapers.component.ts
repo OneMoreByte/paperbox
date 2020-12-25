@@ -22,7 +22,7 @@ export class WallpapersComponent implements OnInit {
 
   ngOnInit(): void {
     this.wallpapersService = new WallpapersService(this.http);
-    this.wallpapersService.getWallpapers().subscribe(data => {
+    this.wallpapersService.getWallpapers(this.paperboxService.config.serverUrl).subscribe(data => {
       this.wallpapers = data;
     });
     console.log(this.wallpapers);

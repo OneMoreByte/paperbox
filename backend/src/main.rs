@@ -36,6 +36,7 @@ async fn main() {
 
 
     let router = filters::health()
+        .or(filters::frontend())
         .or(filters::template())
         .or(filters::wallpaper())
         .or(filters::theme())

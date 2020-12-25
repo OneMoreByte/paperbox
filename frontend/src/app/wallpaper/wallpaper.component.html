@@ -3,7 +3,7 @@
         <div class="col-3">
             <app-wallpaper-title [name]='data.name' [style.color]='selectedTheme.foreground'></app-wallpaper-title>
         </div>
-        <div class="col-1">
+        <div class="col-1" *ngIf="paperboxService.isElectron">
             <wallpaper-apply [themeService]='themeService' [wallpaper]='data' [paperboxService]='paperboxService'></wallpaper-apply>
         </div>
 
@@ -16,7 +16,7 @@
             <app-editor-preview [themeService]='themeService'></app-editor-preview>
         </div>
         <div class="col-3 no-padding-left">
-            <app-theme-selector [themeIds]='data.themes' [themeService]='themeService'></app-theme-selector>
+            <app-theme-selector [themeIds]='data.themes' [themeService]='themeService' [config]='paperboxService.config'></app-theme-selector>
         </div>
     </div>
 </div>
